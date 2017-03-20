@@ -1,0 +1,93 @@
+  <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<title></title>
+<!-- This stylesheet contains specific styles for displaying the map
+ on this page. Replace it with your own styles as described in the
+ documentation:
+ https://developers.google.com/maps/documentation/javascript/tutorial -->
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+#map {
+    height: 100%;
+}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/galleria/1.4.5/galleria.min.js"></script>
+</head>
+<body>
+<div id="map"></div>
+<script>
+function initMap() {
+
+    //geocoder
+    var geocoder = new google.maps.Geocoder;
+
+    //center the map on (uluru?)
+  	var uluru = {lat: -25.363, lng: 131.044};
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 2,
+      center: uluru
+    });
+
+  	//create an array to hold marker objects
+  	var markers = [];
+
+  	//listen for click events on the map
+  	google.maps.event.addListener(map, "click", function(event){
+
+    	//geodecode (lat-long to location name)
+        var location = {"location": {
+                          lat: event.latLng.lat(),
+                          lng: event.latLng.lng()
+                        }};
+        geocoder.geocode(location, function(results, status) {
+          	//adds read address (if possible) to location object
+            if (status === "OK"){
+                location.addr = results[0].formatted_address;
+                createMarker(event, location);
+            }
+        });
+    });
+
+    function createMarker(event, location){
+
+        //on click, create new marker at mouse x,y
+      	var marker = new google.maps.Marker({
+        	position: event.latLng,
+          	map: map
+        });
+
+        //center map
+        map.panTo(event.latLng);
+
+        //for that marker, create an infoWindow object
+        //(one infoWindow per marker)
+        var infoWindow = new google.maps.InfoWindow({
+            content: "<section><h1>View Images</h1><h2>"+location.addr+"</h2></section>"
+        });
+
+        //open infoWindow right away
+        infoWindow.open(map, marker);
+
+        //add click event listener on marker
+        marker.addListener('click', function() {
+            infoWindow.open(map, marker);
+        });
+    }
+
+}
+</script>
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZjD3jPk1OUFBjPzxN7nvN3LqUb_at6p8&callback=initMap">
+</script>
+</body>
+</html>
+
+
