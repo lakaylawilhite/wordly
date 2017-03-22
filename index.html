@@ -15,15 +15,15 @@
   <!-- Compiled and minified JavaScript -->
  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/js/materialize.min.js"></script>
           
- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
+ <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>-->
           
 
 <link rel="stylesheet" type="text/css" href="style.css">
 
-	<title>
-		
+  <title>
+    
 
-	</title>
+  </title>
 </head>
 
 
@@ -33,25 +33,65 @@
 
 
  <aside>
-      <form action="/login" method="POST">
-        <input type="email" name="email" placeholder="email address" />
-        <input type="password" name="password" placeholder="password" />
-        <input type="submit" value="login" />
+      <form method="POST">
+        <input type="email" name="email" placeholder="email address" id="email"/>
+        <input type="password" name="password" placeholder="password" id="password" />
+        <input type="submit" value="login" id="login-button" />
       </form>
     </aside>
+
+
 <div ng-controller="MyAppCtrl">
    {{variable}}
    <button ng-click="increment()">increment</button>
  </div>
-        
+  
+
+<!-- button click implementation -->
+
+
 <script>
-  angular.module('myApp')
-  .controller('MyAppCtrl', function($scope) {
-    $scope.variable = 1;
-    $scope.increment = function() {
-      $scope.variable += 1;
-    }
+  window.addEventListener('load', function() {
+  
+    $('#login-button').on('click', function(evt) {
+        evt.preventDefault();
+        var email = $('#email').val();
+        var password = $('#password').val();
+        $.ajax({
+          method: 'POST',
+            url: '/login',
+            data: {
+              email: email,
+                password: password
+            }
+        })
+
+ 
+
+
+//uncomment lines 115-122 after test
+
+
+
+       .fail(function(err){
+        }).done(function(resp) {
+       }).always(function(resp) {
+          console.log(resp);
+       });
+    });
   });
+
+ // var myApp = angular.module('myApp')
+ // .controller('MyAppCtrl', function($scope) {
+  //  $scope.variable = 1;
+   // $scope.increment = function() {
+    //  $scope.variable += 1;
+   // }
+  //});
+</script>
+
+
+
 
 
 </body>
